@@ -11,6 +11,7 @@ import Profile from './pages/Profile';
 import Shop from './pages/Shop';
 import QuestionsEditor from './pages/QuestionsEditor';
 import AdminPanel from './pages/AdminPanel';
+import PublicLobby from './pages/PublicLobby';
 import './index.css';
 
 // ─── يحمي المسارات التي تحتاج تسجيل دخول ────────────────
@@ -47,6 +48,7 @@ export default function App() {
               <Route path="/results" element={<ProtectedRoute><Results /></ProtectedRoute>} />
               <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
               <Route path="/shop" element={<ProtectedRoute><Shop /></ProtectedRoute>} />
+              <Route path="/public" element={<ProtectedRoute><PublicLobby /></ProtectedRoute>} />
 
               {/* Admin فقط (isAdmin = true في Firestore) */}
               <Route path="/admin" element={<AdminRoute><AdminPanel /></AdminRoute>} />

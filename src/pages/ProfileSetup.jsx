@@ -236,6 +236,23 @@ export default function ProfileSetup() {
                                     🚪 انضمام
                                 </button>
                             </div>
+
+                            {/* زر الغرف العامة */}
+                            <button
+                                onClick={() => { if (!name.trim()) { setError('أدخل اسمك أولاً'); return; } navigate('/public'); }}
+                                style={{
+                                    width: '100%', padding: '14px 20px', borderRadius: 16, cursor: 'pointer',
+                                    background: 'linear-gradient(135deg, #4a0080, #7c3aed, #ffd700)',
+                                    border: 'none', color: '#fff', fontFamily: 'Cairo',
+                                    fontSize: 17, fontWeight: 700, marginTop: 4,
+                                    boxShadow: '0 4px 20px rgba(124,58,237,0.4)',
+                                    transition: 'transform 0.2s',
+                                }}
+                                onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.02)'}
+                                onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                            >
+                                🏟️ الغرف العامة — العب وأربح العملات!
+                            </button>
                         </div>
                     )}
 
