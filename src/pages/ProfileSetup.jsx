@@ -159,94 +159,85 @@ export default function ProfileSetup() {
                 >
                     {mode === 'home' && (
                         <div className="flex flex-col gap-4">
-                            <h2 style={{ fontSize: 22, fontWeight: 700, textAlign: 'center', marginBottom: 8 }}>مرحباً بك! 👋</h2>
+                            <h2 style={{ fontSize: 22, fontWeight: 700, textAlign: 'center', marginBottom: 8 }}>
+                                {playerData?.name ? `أهلاً ${playerData.name}! 👋` : 'مرحباً بك! 👋'}
+                            </h2>
 
-                            {/* صورة الملف الشخصي */}
-                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
-                                <AvatarPreview size={96} />
+                            {/* مستخدم جديد - نموذج الإعداد */}
+                            {!playerData?.name && (
+                                <div className="flex flex-col gap-4">
+                                    {/* صورة الملف الشخصي */}
+                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
+                                        <AvatarPreview size={96} />
+                                        <input ref={fileInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleImageChange} />
+                                        <div style={{ display: 'flex', gap: 8 }}>
+                                            <button className="btn btn-secondary btn-sm" onClick={() => fileInputRef.current?.click()}>
+                                                📷 رفع صورة
+                                            </button>
+                                            {avatarUrl && (
+                                                <button className="btn btn-sm" style={{ background: 'rgba(239,68,68,0.15)', color: 'var(--danger)', border: '1px solid rgba(239,68,68,0.3)' }}
+                                                    onClick={() => { setAvatarUrl(null); fileInputRef.current.value = ''; }}>
+                                                    🗑️ حذف
+                                                </button>
+                                            )}
+                                        </div>
+                                        <p style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+                                            {avatarUrl ? '✅ تم رفع الصورة' : 'اختياري - بدون صورة سيظهر أول حرف من اسمك'}
+                                        </p>
+                                    </div>
 
-                                {/* زر رفع الصورة */}
-                                <input
-                                    ref={fileInputRef}
-                                    type="file"
-                                    accept="image/*"
-                                    style={{ display: 'none' }}
-                                    onChange={handleImageChange}
-                                />
-                                <div style={{ display: 'flex', gap: 8 }}>
-                                    <button
-                                        className="btn btn-secondary btn-sm"
-                                        onClick={() => fileInputRef.current?.click()}
-                                    >
-                                        📷 رفع صورة
-                                    </button>
-                                    {avatarUrl && (
-                                        <button
-                                            className="btn btn-sm"
-                                            style={{ background: 'rgba(239,68,68,0.15)', color: 'var(--danger)', border: '1px solid rgba(239,68,68,0.3)' }}
-                                            onClick={() => { setAvatarUrl(null); fileInputRef.current.value = ''; }}
-                                        >
-                                            🗑️ حذف
-                                        </button>
-                                    )}
+                                    {/* الاسم */}
+                                    <div>
+                                        <label className="label">اسمك في اللعبة</label>
+                                        <input className="input" placeholder="أدخل اسمك..." value={name}
+                                            onChange={e => { setName(e.target.value); setError(''); }} maxLength={20} />
+                                    </div>
+
+                                    {/* لون الملف */}
+                                    <div>
+                                        <label className="label">لون ملفك</label>
+                                        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                                            {COLORS.map((c, i) => (
+                                                <button key={i} onClick={() => setSelectedColor(i)} style={{
+                                                    width: 36, height: 36, borderRadius: '50%', background: c, cursor: 'pointer',
+                                                    border: selectedColor === i ? '3px solid white' : '3px solid transparent',
+                                                    boxShadow: selectedColor === i ? `0 0 10px ${c}` : 'none', transition: 'all 0.2s',
+                                                }} />
+                                            ))}
+                                        </div>
+                                    </div>
                                 </div>
-                                <p style={{ fontSize: 12, color: 'var(--text-muted)' }}>
-                                    {avatarUrl ? '✅ تم رفع الصورة' : 'اختياري - بدون صورة سيظهر أول حرف من اسمك'}
-                                </p>
-                            </div>
-
-                            {/* الاسم */}
-                            <div>
-                                <label className="label">اسمك في اللعبة</label>
-                                <input
-                                    className="input"
-                                    placeholder="أدخل اسمك..."
-                                    value={name}
-                                    onChange={e => { setName(e.target.value); setError(''); }}
-                                    maxLength={20}
-                                />
-                            </div>
-
-                            {/* لون الملف */}
-                            <div>
-                                <label className="label">لون ملفك</label>
-                                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                                    {COLORS.map((c, i) => (
-                                        <button
-                                            key={i}
-                                            onClick={() => setSelectedColor(i)}
-                                            style={{
-                                                width: 36, height: 36, borderRadius: '50%', background: c, cursor: 'pointer',
-                                                border: selectedColor === i ? '3px solid white' : '3px solid transparent',
-                                                boxShadow: selectedColor === i ? `0 0 10px ${c}` : 'none',
-                                                transition: 'all 0.2s',
-                                            }}
-                                        />
-                                    ))}
-                                </div>
-                            </div>
+                            )}
 
                             {error && <p style={{ color: 'var(--danger)', textAlign: 'center', fontSize: 14 }}>{error}</p>}
 
+                            {/* أزرار الإجراءات - لجميع المستخدمين */}
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginTop: 8 }}>
-                                <button className="btn btn-primary btn-lg" onClick={() => { if (!name.trim()) { setError('أدخل اسمك أولاً'); return; } setMode('create'); setError(''); }}>
-                                    🏠 إنشاء غرفة
-                                </button>
-                                <button className="btn btn-secondary btn-lg" onClick={() => { if (!name.trim()) { setError('أدخل اسمك أولاً'); return; } setMode('join'); setError(''); }}>
-                                    🚪 انضمام
-                                </button>
+                                <button className="btn btn-primary btn-lg" onClick={() => {
+                                    const n = playerData?.name || name.trim();
+                                    if (!n) { setError('أدخل اسمك أولاً'); return; }
+                                    setMode('create'); setError('');
+                                }}>🏠 إنشاء غرفة</button>
+                                <button className="btn btn-secondary btn-lg" onClick={() => {
+                                    const n = playerData?.name || name.trim();
+                                    if (!n) { setError('أدخل اسمك أولاً'); return; }
+                                    setMode('join'); setError('');
+                                }}>🚪 انضمام</button>
                             </div>
 
                             {/* زر الغرف العامة */}
                             <button
-                                onClick={() => { if (!name.trim()) { setError('أدخل اسمك أولاً'); return; } navigate('/public'); }}
+                                onClick={() => {
+                                    const n = playerData?.name || name.trim();
+                                    if (!n) { setError('أدخل اسمك أولاً'); return; }
+                                    navigate('/public');
+                                }}
                                 style={{
                                     width: '100%', padding: '14px 20px', borderRadius: 16, cursor: 'pointer',
                                     background: 'linear-gradient(135deg, #4a0080, #7c3aed, #ffd700)',
                                     border: 'none', color: '#fff', fontFamily: 'Cairo',
-                                    fontSize: 17, fontWeight: 700, marginTop: 4,
-                                    boxShadow: '0 4px 20px rgba(124,58,237,0.4)',
-                                    transition: 'transform 0.2s',
+                                    fontSize: 17, fontWeight: 700,
+                                    boxShadow: '0 4px 20px rgba(124,58,237,0.4)', transition: 'transform 0.2s',
                                 }}
                                 onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.02)'}
                                 onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
