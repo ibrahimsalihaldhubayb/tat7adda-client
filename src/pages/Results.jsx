@@ -5,6 +5,7 @@ import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useGame } from '../context/GameContext';
 import { useAuth, calcMatchXP, calcLevel, getFrame } from '../context/AuthContext';
+import { useSocket } from '../context/SocketContext';
 
 const MEDALS = ['🥇', '🥈', '🥉'];
 const RANK_COLORS = ['#fbbf24', '#94a3b8', '#cd7c2f'];
@@ -12,13 +13,26 @@ const RANK_COLORS = ['#fbbf24', '#94a3b8', '#cd7c2f'];
 export default function Results() {
     const { state } = useLocation();
     const navigate = useNavigate();
-    const { profile } = useGame();
+    const { profile, room, setRoom } = useGame();
     const { user, playerData, updatePlayerData } = useAuth();
+    const socket = useSocket();
     const saved = useRef(false);
 
     const players = state?.players || [];
+    const roomCode = state?.roomCode;
+    const isAdmin = room?.adminId === socket?.id;
     const myRank = players.findIndex(p => p.name === profile?.name);
     const myPlayer = players[myRank];
+
+    // الاستماع للعودة للوبي معاً
+    useEffect(() => {
+        if (!socket) return;
+        socket.on('room:reset_lobby', ({ room: r }) => {
+            setRoom(r);
+            navigate('/lobby');
+        });
+        return () => socket.off('room:reset_lobby');
+    }, [socket]);
 
     // حفظ نتيجة المباراة في Firebase مرة واحدة
     useEffect(() => {
@@ -168,9 +182,22 @@ export default function Results() {
                         )}
 
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginTop: 16 }}>
-                            <button className="btn btn-primary btn-lg" onClick={() => navigate('/')}>
-                                🔄 لعبة جديدة
-                            </button>
+                            {/* زر جولات أخرى - للأدمن فقط يُرسل إعادة تعيين، للآخرين فقط عرض */}
+                            {isAdmin ? (
+                                <button className="btn btn-primary btn-lg" onClick={() => {
+                                    if (roomCode && socket) {
+                                        socket.emit('admin:reset_lobby', { roomCode });
+                                    } else {
+                                        navigate('/lobby');
+                                    }
+                                }}>
+                                    🔄 جولات أخرى
+                                </button>
+                            ) : (
+                                <div style={{ padding: '16px', background: 'var(--surface)', borderRadius: 12, textAlign: 'center', fontSize: 13, color: 'var(--text-muted)' }}>
+                                    ⏳ في انتظار الأدمن...
+                                </div>
+                            )}
                             <Link to="/profile" className="btn btn-secondary btn-lg"
                                 style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                 👤 ملفي

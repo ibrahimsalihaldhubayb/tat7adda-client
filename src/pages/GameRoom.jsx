@@ -38,6 +38,7 @@ export default function GameRoom() {
     const [scores, setScores] = useState([]);
     const [roundScore, setRoundScore] = useState(null);
     const [showScorePopup, setShowScorePopup] = useState(false);
+    const [offlinePlayers, setOfflinePlayers] = useState(new Set());
     const timerRef = useRef(null);
 
     useEffect(() => {
@@ -54,13 +55,19 @@ export default function GameRoom() {
         });
 
         socket.on('game:results', ({ players }) => {
-            navigate('/results', { state: { players } });
+            navigate('/results', { state: { players, roomCode: room?.code } });
+        });
+
+        // ◉ لاعب خرج من الموقع أثناء اللعب
+        socket.on('room:player_offline', ({ playerId, playerName }) => {
+            setOfflinePlayers(prev => new Set([...prev, playerId]));
         });
 
         return () => {
             socket.off('game:round_start');
             socket.off('room:scores_updated');
             socket.off('game:results');
+            socket.off('room:player_offline');
         };
     }, [socket]);
 
@@ -97,7 +104,13 @@ export default function GameRoom() {
 
     const GameComponent = GAME_COMPONENTS[currentRound.gameId];
     const progress = (timeLeft / currentRound.duration) * 100;
-    const timerColor = timeLeft > 10 ? 'var(--success)' : timeLeft > 5 ? 'var(--accent)' : 'var(--danger)';
+    const timerColor = timeLeft > 10 ? 'var(--success)' : timeLeft > 5 ? 'var(--warning)' : 'var(--danger)';
+
+    // All players from room + score data merged
+    const allPlayers = room?.players?.map(p => {
+        const scoreData = scores.find(s => s.id === p.id);
+        return { ...p, score: scoreData?.score ?? p.score ?? 0 };
+    }) || scores;
 
     return (
         <div className="game-container">
@@ -150,24 +163,52 @@ export default function GameRoom() {
                 )}
             </div>
 
-            {/* Live scores */}
-            {scores.length > 0 && (
-                <div className="card" style={{ marginTop: 16 }}>
-                    <div style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 8 }}>🏆 الترتيب الحالي</div>
+            {/* ◉ لوحة اللاعبين مع حالة الاتصال */}
+            {allPlayers.length > 0 && (
+                <div style={{
+                    marginTop: 12,
+                    background: 'linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02))',
+                    border: '1px solid var(--border2)',
+                    borderRadius: 14,
+                    padding: '10px 14px',
+                }}>
+                    <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 8, display: 'flex', justifyContent: 'space-between' }}>
+                        <span>👥 اللاعبون</span>
+                        {offlinePlayers.size > 0 && (
+                            <span style={{ color: 'var(--danger)', fontSize: 11 }}>
+                                ⚠️ {offlinePlayers.size} غادر الموقع
+                            </span>
+                        )}
+                    </div>
                     <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                        {[...scores].sort((a, b) => b.score - a.score).slice(0, 5).map((p, i) => (
-                            <div key={p.id} style={{
-                                display: 'flex', alignItems: 'center', gap: 6,
-                                padding: '4px 10px', borderRadius: 999,
-                                background: i === 0 ? 'rgba(245,158,11,0.2)' : 'var(--surface)',
-                                border: `1px solid ${i === 0 ? 'rgba(245,158,11,0.3)' : 'var(--border)'}`,
-                                fontSize: 13,
-                            }}>
-                                <span>{i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}.`}</span>
-                                <span style={{ fontWeight: 700 }}>{p.name}</span>
-                                <span style={{ color: 'var(--text-muted)' }}>{p.score}</span>
-                            </div>
-                        ))}
+                        {[...allPlayers].sort((a, b) => (b.score || 0) - (a.score || 0)).map((p, i) => {
+                            const isOffline = offlinePlayers.has(p.id);
+                            const isMe = p.name === profile?.name;
+                            const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : null;
+                            return (
+                                <div key={p.id} style={{
+                                    display: 'flex', alignItems: 'center', gap: 6,
+                                    padding: '5px 10px', borderRadius: 999,
+                                    background: isMe ? 'rgba(192,132,252,0.12)' : 'var(--surface)',
+                                    border: `1.5px solid ${isOffline ? 'rgba(244,63,94,0.4)' : isMe ? 'rgba(192,132,252,0.3)' : 'var(--border)'}`,
+                                    opacity: isOffline ? 0.65 : 1,
+                                    fontSize: 13,
+                                    transition: 'all 0.3s',
+                                }}>
+                                    {/* حالة الاتصال */}
+                                    <div style={{
+                                        width: 7, height: 7, borderRadius: '50%',
+                                        background: isOffline ? 'var(--danger)' : 'var(--success)',
+                                        boxShadow: `0 0 6px ${isOffline ? 'var(--danger)' : 'var(--success)'}`,
+                                        flexShrink: 0,
+                                    }} />
+                                    {medal && <span>{medal}</span>}
+                                    <span style={{ fontWeight: isMe ? 800 : 600 }}>{p.name}</span>
+                                    <span style={{ color: 'var(--text-muted)', fontSize: 12 }}>{p.score || 0}</span>
+                                    {isOffline && <span style={{ fontSize: 10, color: 'var(--danger)' }}>خرج</span>}
+                                </div>
+                            );
+                        })}
                     </div>
                 </div>
             )}

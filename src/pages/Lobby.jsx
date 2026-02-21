@@ -61,10 +61,15 @@ export default function Lobby() {
             setCurrentRound(roundData);
             navigate('/game');
         });
+        // عند عودة الغرفة للوبي بعد اللعبة
+        socket.on('room:reset_lobby', ({ room: r }) => {
+            setRoom(r);
+        });
         return () => {
             socket.off('room:updated');
             socket.off('game:started');
             socket.off('game:round_start');
+            socket.off('room:reset_lobby');
         };
     }, [socket, room]);
 
