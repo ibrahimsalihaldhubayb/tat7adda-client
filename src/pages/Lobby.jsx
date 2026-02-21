@@ -13,7 +13,6 @@ const TIME_OPTIONS = [
 ];
 
 const BET_OPTIONS = [
-    { label: 'مجاني', value: 0, icon: '🆓', color: '#64748b' },
     { label: '20', value: 20, icon: '🥉', color: '#cd7f32' },
     { label: '50', value: 50, icon: '🥈', color: '#aaa9ad' },
     { label: '100', value: 100, icon: '🥇', color: '#ffd700' },
@@ -43,7 +42,7 @@ export default function Lobby() {
 
     const [selectedGames, setSelectedGames] = useState([]);
     const [timePerRound, setTimePerRound] = useState(30);
-    const [betAmount, setBetAmount] = useState(0);
+    const [betAmount, setBetAmount] = useState(20);
     const [copied, setCopied] = useState(false);
     const [showQR, setShowQR] = useState(false);
 
