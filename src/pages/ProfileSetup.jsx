@@ -107,10 +107,11 @@ export default function ProfileSetup() {
     return (
         <div className="page">
             <div className="page-content">
+
                 {/* Profile button - أيقونة الملف الشخصي */}
                 {playerData && (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                        style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 12 }}>
+                        style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
                         <Link to="/profile" style={{ textDecoration: 'none' }}>
                             <div style={{
                                 display: 'flex', alignItems: 'center', gap: 8,
@@ -133,11 +134,28 @@ export default function ProfileSetup() {
                                     <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text)' }}>{playerData.name}</div>
                                     <div style={{ fontSize: 11, color: frame.color }}>Lv.{level} {frame.label}</div>
                                 </div>
-                                <div style={{ fontSize: 12, color: '#fbbf24', fontWeight: 700 }}>🪙 {(playerData.coins || 0).toLocaleString()}</div>
                             </div>
+                        </Link>
+                        {/* 🪙 عملات - الضغط يفتح صفحة الشحن */}
+                        <Link to="/shop" style={{ textDecoration: 'none' }}>
+                            <motion.div
+                                whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+                                style={{
+                                    display: 'flex', alignItems: 'center', gap: 6,
+                                    padding: '8px 14px', borderRadius: 50, cursor: 'pointer',
+                                    background: 'rgba(245,158,11,0.12)', backdropFilter: 'blur(10px)',
+                                    border: '1px solid rgba(245,158,11,0.3)',
+                                }}>
+                                <span style={{ fontSize: 18 }}>🪙</span>
+                                <span style={{ fontSize: 14, fontWeight: 800, color: '#fbbf24' }}>
+                                    {(playerData.coins || 0).toLocaleString()}
+                                </span>
+                                <span style={{ fontSize: 11, color: 'rgba(251,191,36,0.6)' }}>+</span>
+                            </motion.div>
                         </Link>
                     </motion.div>
                 )}
+
 
                 {/* Logo */}
                 <motion.div

@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useAuth } from '../context/AuthContext';
+
+const DAILY_FREE = 150; // عملات مجانية يومية
 
 // باقات العملات
 const PACKAGES = [
@@ -31,6 +33,26 @@ export default function Shop() {
     const [step, setStep] = useState('browse'); // browse | payment | processing | success
     const [promoCode, setPromoCode] = useState('');
     const [promoApplied, setPromoApplied] = useState(false);
+    const [dailyClaimed, setDailyClaimed] = useState(false);
+    const [dailyLoading, setDailyLoading] = useState(false);
+
+    // تحقق من مطالبة اليوم
+    useEffect(() => {
+        if (!playerData) return;
+        const today = new Date().toDateString();
+        if (playerData.lastDailyCoins === today) setDailyClaimed(true);
+    }, [playerData]);
+
+    async function claimDailyCoins() {
+        if (dailyClaimed || dailyLoading || !user) return;
+        setDailyLoading(true);
+        const today = new Date().toDateString();
+        const newCoins = (playerData?.coins || 0) + DAILY_FREE;
+        await setDoc(doc(db, 'players', user.uid), { coins: newCoins, lastDailyCoins: today }, { merge: true });
+        updatePlayerData(user.uid, { coins: newCoins, lastDailyCoins: today });
+        setDailyClaimed(true);
+        setDailyLoading(false);
+    }
 
     const pkg = PACKAGES.find(p => p.id === selectedPkg);
     const finalCoins = promoApplied && pkg ? Math.round(pkg.coins * 1.2) : pkg?.coins;
@@ -75,6 +97,51 @@ export default function Shop() {
             {/* ═══ BROWSE STEP ═══ */}
             {step === 'browse' && (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+
+                    {/* ═══ FREE DAILY COINS ═══ */}
+                    <motion.div
+                        initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
+                        style={{
+                            marginBottom: 16, padding: '16px 18px', borderRadius: 18,
+                            background: dailyClaimed
+                                ? 'rgba(100,116,139,0.08)'
+                                : 'linear-gradient(135deg, rgba(34,197,94,0.15), rgba(16,185,129,0.08))',
+                            border: `1px solid ${dailyClaimed ? 'var(--border)' : 'rgba(34,197,94,0.35)'}`,
+                            display: 'flex', alignItems: 'center', gap: 14,
+                        }}>
+                        <motion.div
+                            animate={dailyClaimed ? {} : { rotate: [0, 15, -15, 0] }}
+                            transition={{ duration: 1, repeat: Infinity, repeatDelay: 2 }}
+                            style={{ fontSize: 36, flexShrink: 0 }}
+                        >
+                            {dailyClaimed ? '✅' : '🎁'}
+                        </motion.div>
+                        <div style={{ flex: 1 }}>
+                            <div style={{ fontWeight: 800, fontSize: 15, marginBottom: 2 }}>
+                                {dailyClaimed ? 'جمعت عملاتك اليوم' : '🪙 عملاتك المجانية اليومية'}
+                            </div>
+                            <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+                                {dailyClaimed ? 'تعود غداً للمزيد!' : `${DAILY_FREE} عملة مجانية كل يوم — دون شراء`}
+                            </div>
+                        </div>
+                        <motion.button
+                            whileHover={dailyClaimed ? {} : { scale: 1.05 }}
+                            whileTap={dailyClaimed ? {} : { scale: 0.95 }}
+                            onClick={claimDailyCoins}
+                            disabled={dailyClaimed || dailyLoading}
+                            style={{
+                                padding: '10px 16px', borderRadius: 12, border: 'none',
+                                cursor: dailyClaimed ? 'default' : 'pointer',
+                                fontFamily: 'Cairo', fontWeight: 800, fontSize: 14,
+                                background: dailyClaimed ? 'var(--surface)' : 'linear-gradient(135deg, #22c55e, #16a34a)',
+                                color: dailyClaimed ? 'var(--text-muted)' : 'white',
+                                whiteSpace: 'nowrap',
+                                boxShadow: dailyClaimed ? 'none' : '0 4px 16px rgba(34,197,94,0.35)',
+                            }}
+                        >
+                            {dailyLoading ? '⏳' : dailyClaimed ? 'تم ✓' : 'اجمع!'}
+                        </motion.button>
+                    </motion.div>
 
                     {/* Banner */}
                     <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }}
