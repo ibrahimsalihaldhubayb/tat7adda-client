@@ -108,33 +108,26 @@ export default function Profile() {
                     </div>
                 </div>
 
-                {/* Coins + شحن */}
-                <div style={{ marginTop: 16, display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
-                    <div style={{
-                        padding: '12px 20px', borderRadius: 12,
-                        background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.3)',
-                        display: 'inline-flex', alignItems: 'center', gap: 8
-                    }}>
-                        <span style={{ fontSize: 24 }}>🪙</span>
-                        <div>
-                            <div style={{ fontSize: 22, fontWeight: 900, color: '#fbbf24' }}>
-                                {(playerData.coins || 0).toLocaleString()}
-                            </div>
-                            <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>عملة</div>
-                        </div>
-                    </div>
+                {/* Coins - الضغط يفتح متجر الشحن */}
+                <div style={{ marginTop: 16, display: 'flex', justifyContent: 'center' }}>
                     <Link to="/shop" style={{ textDecoration: 'none' }}>
-                        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+                        <motion.div
+                            whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
                             style={{
-                                padding: '12px 20px', borderRadius: 12, cursor: 'pointer',
-                                background: 'linear-gradient(135deg, rgba(16,185,129,0.15), rgba(5,150,105,0.1))',
-                                border: '1px solid rgba(16,185,129,0.4)',
-                                display: 'inline-flex', alignItems: 'center', gap: 8
+                                padding: '14px 28px', borderRadius: 16, cursor: 'pointer',
+                                background: 'linear-gradient(135deg, rgba(245,158,11,0.15), rgba(251,191,36,0.08))',
+                                border: '1.5px solid rgba(245,158,11,0.4)',
+                                display: 'inline-flex', alignItems: 'center', gap: 12,
+                                boxShadow: '0 4px 20px rgba(245,158,11,0.12)',
                             }}>
-                            <span style={{ fontSize: 22 }}>💳</span>
+                            <span style={{ fontSize: 28 }}>🪙</span>
                             <div>
-                                <div style={{ fontSize: 14, fontWeight: 800, color: '#10b981' }}>شحن عملات</div>
-                                <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>اشتري المزيد</div>
+                                <div style={{ fontSize: 24, fontWeight: 900, color: '#fbbf24' }}>
+                                    {(playerData.coins || 0).toLocaleString()}
+                                </div>
+                                <div style={{ fontSize: 11, color: 'rgba(251,191,36,0.7)', marginTop: 1 }}>
+                                    عملة · اضغط للشحن +
+                                </div>
                             </div>
                         </motion.div>
                     </Link>
