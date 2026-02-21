@@ -145,9 +145,59 @@ export default function ProfileSetup() {
                     animate={{ y: 0, opacity: 1 }}
                     className="text-center" style={{ marginBottom: 40 }}
                 >
-                    <div style={{ fontSize: 64, marginBottom: 8 }} className="animate-float">🎮</div>
-                    <h1 className="title gradient-text">تتحدى؟</h1>
-                    <p className="subtitle">من يقدر يتحدى</p>
+                    {/* Crown SVG Logo */}
+                    <motion.div
+                        animate={{ y: [0, -8, 0] }}
+                        transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
+                        style={{ display: 'inline-block', marginBottom: 12 }}
+                    >
+                        <svg width="80" height="70" viewBox="0 0 80 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="crownGrad" x1="0" y1="0" x2="80" y2="70" gradientUnits="userSpaceOnUse">
+                                    <stop offset="0%" stopColor="#f59e0b" />
+                                    <stop offset="50%" stopColor="#fbbf24" />
+                                    <stop offset="100%" stopColor="#f59e0b" />
+                                </linearGradient>
+                                <filter id="glow">
+                                    <feGaussianBlur stdDeviation="3" result="blur" />
+                                    <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+                                </filter>
+                            </defs>
+                            {/* Crown */}
+                            <path d="M8 55 L16 25 L32 42 L40 10 L48 42 L64 25 L72 55 Z"
+                                fill="url(#crownGrad)" filter="url(#glow)" opacity="0.95" />
+                            <rect x="6" y="55" width="68" height="10" rx="5" fill="url(#crownGrad)" opacity="0.9" />
+                            {/* Gems */}
+                            <circle cx="40" cy="10" r="5" fill="#c084fc" filter="url(#glow)" />
+                            <circle cx="16" cy="25" r="4" fill="#38bdf8" filter="url(#glow)" />
+                            <circle cx="64" cy="25" r="4" fill="#38bdf8" filter="url(#glow)" />
+                        </svg>
+                    </motion.div>
+
+                    {/* Brand Name */}
+                    <div style={{ position: 'relative', display: 'inline-block' }}>
+                        <h1 style={{
+                            fontSize: 52,
+                            fontWeight: 900,
+                            fontFamily: 'Tajawal, Cairo, sans-serif',
+                            background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 30%, #c084fc 65%, #38bdf8 100%)',
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent',
+                            backgroundClip: 'text',
+                            letterSpacing: '-1px',
+                            lineHeight: 1,
+                            filter: 'drop-shadow(0 0 20px rgba(245,158,11,0.4))',
+                        }}>تتحدى</h1>
+                        {/* Glow underline */}
+                        <div style={{
+                            height: 3, borderRadius: 99, marginTop: 6,
+                            background: 'linear-gradient(90deg, transparent, #f59e0b 30%, #c084fc 70%, transparent)',
+                            boxShadow: '0 0 12px rgba(245,158,11,0.6)',
+                        }} />
+                    </div>
+                    <p style={{ marginTop: 10, color: 'var(--text-dim)', fontSize: 15, letterSpacing: 2, textTransform: 'uppercase', fontFamily: 'Cairo' }}>
+                        من يقدر يتحدى؟
+                    </p>
                 </motion.div>
 
 
