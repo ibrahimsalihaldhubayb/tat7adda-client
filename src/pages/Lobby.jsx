@@ -12,6 +12,15 @@ const TIME_OPTIONS = [
     { label: '🐢 بطيء', value: 60, desc: '60 ثانية' },
 ];
 
+const BET_OPTIONS = [
+    { label: 'مجاني', value: 0, icon: '🆓', color: '#64748b' },
+    { label: '20', value: 20, icon: '🥉', color: '#cd7f32' },
+    { label: '50', value: 50, icon: '🥈', color: '#aaa9ad' },
+    { label: '100', value: 100, icon: '🥇', color: '#ffd700' },
+    { label: '500', value: 500, icon: '💎', color: '#38bdf8' },
+    { label: '1000', value: 1000, icon: '👑', color: '#c084fc' },
+];
+
 // ألوان مميزة لكل لعبة
 const GAME_COLORS = {
     'speed-math': { bg: 'rgba(239,68,68,0.12)', border: 'rgba(239,68,68,0.4)', glow: '#ef4444' },
@@ -34,8 +43,11 @@ export default function Lobby() {
 
     const [selectedGames, setSelectedGames] = useState([]);
     const [timePerRound, setTimePerRound] = useState(30);
+    const [betAmount, setBetAmount] = useState(0);
     const [copied, setCopied] = useState(false);
     const [showQR, setShowQR] = useState(false);
+
+    const pot = betAmount * (room?.players?.length || 1);
 
     // رابط الانضمام - يشمل كود الغرفة
     const joinUrl = `${window.location.origin}/?join=${room?.code}`;
@@ -314,6 +326,53 @@ export default function Lobby() {
                 </div>
             </motion.div>
 
+            {/* ═══ BET SELECTION ═══ */}
+            {isAdmin ? (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.18 }}
+                    className="card" style={{ marginBottom: 16 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                        <h3 style={{ fontSize: 15, fontWeight: 700 }}>🪙 قيمة الرهان</h3>
+                        {betAmount > 0 && (
+                            <span style={{ fontSize: 13, color: '#fbbf24', fontWeight: 700 }}>
+                                الجائزة: {betAmount * room.players.length} عملة
+                            </span>
+                        )}
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8 }}>
+                        {BET_OPTIONS.map(opt => (
+                            <motion.button key={opt.value}
+                                whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.96 }}
+                                onClick={() => setBetAmount(opt.value)}
+                                style={{
+                                    padding: '12px 8px', borderRadius: 12, cursor: 'pointer',
+                                    fontFamily: 'Cairo', fontWeight: 700, fontSize: 14, textAlign: 'center',
+                                    background: betAmount === opt.value
+                                        ? `${opt.color}25`
+                                        : 'var(--surface)',
+                                    border: `2px solid ${betAmount === opt.value ? opt.color : 'var(--border)'}`,
+                                    color: betAmount === opt.value ? opt.color : 'var(--text-muted)',
+                                    boxShadow: betAmount === opt.value ? `0 0 16px ${opt.color}40` : 'none',
+                                    transition: 'all 0.2s',
+                                }}>
+                                <div style={{ fontSize: 20 }}>{opt.icon}</div>
+                                <div style={{ marginTop: 4 }}>{opt.label}{opt.value > 0 ? ' 🪙' : ''}</div>
+                            </motion.button>
+                        ))}
+                    </div>
+                </motion.div>
+            ) : (
+                betAmount > 0 && (
+                    <div className="card" style={{
+                        marginBottom: 16, textAlign: 'center', padding: '12px 16px',
+                        background: 'rgba(251,191,36,0.06)', border: '1px solid rgba(251,191,36,0.25)'
+                    }}>
+                        <span style={{ color: '#fbbf24', fontWeight: 700, fontSize: 15 }}>
+                            🪙 اللعب على {betAmount} عملة • الجائزة: {pot} عملة
+                        </span>
+                    </div>
+                )
+            )}
+
             {/* ═══ TIME SELECTION (Admin) ═══ */}
             {isAdmin && (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}
@@ -362,7 +421,9 @@ export default function Lobby() {
                         }}>
                         {selectedGames.length === 0
                             ? '⬆️ اختر لعبة واحدة على الأقل'
-                            : `🚀 ابدأ اللعبة · ${selectedGames.length} ألعاب`}
+                            : betAmount > 0
+                                ? `🚀 ابدأ · ${selectedGames.length} ألعاب · الجائزة ${betAmount * room.players.length} 🪙`
+                                : `🚀 ابدأ اللعبة · ${selectedGames.length} ألعاب`}
                     </motion.button>
                 </motion.div>
             ) : (
