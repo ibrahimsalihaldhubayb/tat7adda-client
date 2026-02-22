@@ -257,7 +257,7 @@ export default function AdminPanel() {
                                                             disabled={!coinAmount || actionLoading}
                                                             onClick={() => updateCoins(p.id, +parseInt(coinAmount))}
                                                             style={{
-                                                                padding: '9px 16px', borderRadius: 10, border: 'none',
+                                                                padding: '9px 16px', borderRadius: 10,
                                                                 cursor: 'pointer', fontFamily: 'Cairo', fontWeight: 700, fontSize: 13,
                                                                 background: 'rgba(16,185,129,0.15)', color: '#10b981',
                                                                 border: '1px solid rgba(16,185,129,0.3)'
@@ -268,7 +268,7 @@ export default function AdminPanel() {
                                                             disabled={!coinAmount || actionLoading}
                                                             onClick={() => updateCoins(p.id, -parseInt(coinAmount))}
                                                             style={{
-                                                                padding: '9px 16px', borderRadius: 10, border: 'none',
+                                                                padding: '9px 16px', borderRadius: 10,
                                                                 cursor: 'pointer', fontFamily: 'Cairo', fontWeight: 700, fontSize: 13,
                                                                 background: 'rgba(239,68,68,0.12)', color: '#ef4444',
                                                                 border: '1px solid rgba(239,68,68,0.25)'
@@ -304,7 +304,7 @@ export default function AdminPanel() {
                                                                 disabled={actionLoading}
                                                                 onClick={() => blockPlayer(p.id, p.blocked)}
                                                                 style={{
-                                                                    padding: '9px 14px', borderRadius: 10, border: 'none',
+                                                                    padding: '9px 14px', borderRadius: 10,
                                                                     cursor: 'pointer', fontFamily: 'Cairo', fontWeight: 700, fontSize: 13,
                                                                     background: p.blocked ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.12)',
                                                                     color: p.blocked ? '#10b981' : '#ef4444',
@@ -317,7 +317,7 @@ export default function AdminPanel() {
                                                                 disabled={actionLoading}
                                                                 onClick={() => makeAdmin(p.id, p.isAdmin)}
                                                                 style={{
-                                                                    padding: '9px 14px', borderRadius: 10, border: 'none',
+                                                                    padding: '9px 14px', borderRadius: 10,
                                                                     cursor: 'pointer', fontFamily: 'Cairo', fontWeight: 700, fontSize: 13,
                                                                     background: p.isAdmin ? 'rgba(239,68,68,0.12)' : 'rgba(245,158,11,0.12)',
                                                                     color: p.isAdmin ? '#ef4444' : '#f59e0b',

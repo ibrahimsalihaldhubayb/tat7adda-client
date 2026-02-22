@@ -1,0 +1,6 @@
+{
+    "appId": "com.tat7adda.app",
+    "appName": "تتحدى؟",
+    "webDir": "dist",
+    "bundledWebRuntime": false
+}

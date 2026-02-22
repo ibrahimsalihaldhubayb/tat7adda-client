@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">تتحدى؟</string>
+    <string name="title_activity_main">تتحدى؟</string>
+    <string name="package_name">com.tat7adda.app</string>
+    <string name="custom_url_scheme">com.tat7adda.app</string>
+</resources>

@@ -150,7 +150,7 @@ export default function QuestionsEditor() {
                     <motion.button key={id} whileTap={{ scale: 0.95 }}
                         onClick={() => { setActiveGame(id); setEditIdx(null); }}
                         style={{
-                            padding: '8px 14px', borderRadius: 10, border: 'none', cursor: 'pointer',
+                            padding: '8px 14px', borderRadius: 10, cursor: 'pointer',
                             fontFamily: 'Cairo', fontWeight: 700, fontSize: 13, whiteSpace: 'nowrap', flexShrink: 0,
                             background: activeGame === id ? `${g.color}25` : 'var(--surface)',
                             color: activeGame === id ? g.color : 'var(--text-muted)',
@@ -172,7 +172,7 @@ export default function QuestionsEditor() {
                     <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
                         onClick={addNew}
                         style={{
-                            padding: '8px 14px', borderRadius: 10, border: 'none', cursor: 'pointer',
+                            padding: '8px 14px', borderRadius: 10, cursor: 'pointer',
                             fontFamily: 'Cairo', fontWeight: 700, fontSize: 13,
                             background: `${game.color}20`, color: game.color,
                             border: `1.5px solid ${game.color}40`

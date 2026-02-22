@@ -388,7 +388,7 @@ export default function Lobby() {
                                 whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
                                 onClick={() => setTimePerRound(opt.value)}
                                 style={{
-                                    padding: '12px 8px', borderRadius: 12, border: 'none', cursor: 'pointer',
+                                    padding: '12px 8px', borderRadius: 12, cursor: 'pointer',
                                     fontFamily: 'Cairo', fontWeight: 700, fontSize: 14, textAlign: 'center',
                                     background: timePerRound === opt.value
                                         ? 'linear-gradient(135deg, var(--primary), #5b21b6)'

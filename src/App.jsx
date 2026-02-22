@@ -12,6 +12,8 @@ import Shop from './pages/Shop';
 import QuestionsEditor from './pages/QuestionsEditor';
 import AdminPanel from './pages/AdminPanel';
 import PublicLobby from './pages/PublicLobby';
+import { App as CapApp } from '@capacitor/app';
+import { useEffect } from 'react';
 import './index.css';
 
 // ─── يحمي المسارات التي تحتاج تسجيل دخول ────────────────
@@ -32,6 +34,23 @@ function AdminRoute({ children }) {
 }
 
 export default function App() {
+  useEffect(() => {
+    const handleBackButton = async () => {
+      // إذا كان المتصفح يدعم history.back
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        // إذا كان في الصفحة الرئيسية -> يغلق التطبيق
+        CapApp.exitApp();
+      }
+    };
+
+    const listener = CapApp.addListener('backButton', handleBackButton);
+    return () => {
+      listener.then(l => l.remove());
+    };
+  }, []);
+
   return (
     <AuthProvider>
       <SocketProvider>
