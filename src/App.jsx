@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { SocketProvider } from './context/SocketContext';
 import { GameProvider } from './context/GameContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -55,7 +55,7 @@ export default function App() {
     <AuthProvider>
       <SocketProvider>
         <GameProvider>
-          <BrowserRouter>
+          <HashRouter>
             <Routes>
               {/* Auth */}
               <Route path="/auth" element={<AuthPage />} />
@@ -75,7 +75,7 @@ export default function App() {
 
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>
-          </BrowserRouter>
+          </HashRouter>
         </GameProvider>
       </SocketProvider>
     </AuthProvider>

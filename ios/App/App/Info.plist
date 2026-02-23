@@ -47,5 +47,11 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>نحتاج إلى صلاحية الوصول للكاميرا لتتمكن من التقاط صورة ووضعها كصورة لملفك الشخصي في اللعبة.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>نحتاج إلى صلاحية الوصول لمعرض الصور لتتمكن من اختيار صورة لملفك الشخصي في اللعبة.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>نحتاج إلى صلاحية الوصول لحفظ الصور في جهازك.</string>
 </dict>
 </plist>

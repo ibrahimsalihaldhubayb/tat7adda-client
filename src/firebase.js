@@ -1,7 +1,8 @@
 // 🔥 Firebase Config
 import { initializeApp } from 'firebase/app';
-import { getAuth, GoogleAuthProvider } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, initializeAuth, indexedDBLocalPersistence, browserLocalPersistence } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
+import { Capacitor } from '@capacitor/core';
 
 const firebaseConfig = {
     apiKey: "AIzaSyAxKFAPBeIyFgKKh7NDICujCLPNMccWukg",
@@ -15,7 +16,11 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-export const auth = getAuth(app);
+// في بيئة الموبايل (Capacitor) نفضل استخدام indexedDB لضمان الحفظ
+export const auth = initializeAuth(app, {
+    persistence: Capacitor.isNativePlatform() ? indexedDBLocalPersistence : browserLocalPersistence
+});
+
 export const db = getFirestore(app);
 export const googleProvider = new GoogleAuthProvider();
 
